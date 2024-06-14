@@ -8,22 +8,16 @@ subdomain: fasterwhisper
 domain: diana.local
 servicePort: "8080"
 
+env:
+  OVOS_CONFIG_BASE_FOLDER: neon
+  OVOS_CONFIG_FILENAME: diana.yaml
+  XDG_CONFIG_HOME: /config
 image:
   repository: docker.io/smartgic/ovos-stt-server-fasterwhisper
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: alpha
-volumeMounts:
-  - name: config-volume
-    mountPath: "/home/ovos/.config/mycroft" # Adjusted for the 'ovos' user
-    readOnly: false
-volumes:
-  - name: config-volume
-    configMap:
-      name: mycroft-config
-      items:
-        - key: mycroft.conf
-          path: mycroft.conf
+
 resources:
   requests:
     memory: "4Gi"
@@ -50,14 +44,10 @@ ingress:
     secretName: tls-letsencrypt-prod
 
 core:
-  fasterwhisperConfig: |-
-    {
-      "stt": {
-        "module": "ovos-stt-plugin-fasterwhisper",
-        "ovos-stt-plugin-fasterwhisper": {
-          "model": "medium",
-          "cpu_threads": 4,
-          "gradio": true
-        }
-      }
-    }
+  fasterwhisperConfig:
+    stt:
+      module: ovos-stt-plugin-fasterwhisper
+      ovos-stt-plugin-fasterwhisper:
+        model: medium
+        cpu_threads: 4
+        gradio: true

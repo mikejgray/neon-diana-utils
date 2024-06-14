@@ -28,6 +28,13 @@ spec:
             - name: {{ $fullName }}
               containerPort: {{ .Values.servicePort }}
               protocol: TCP
+              {{- if .Values.env }}
+              env:
+                {{- range $key, $value := .Values.env }}
+                - name: {{ $key }}
+                  value: {{ $value | quote }}
+                {{- end }}
+              {{- end }}
           {{- if .Values.configSecret || .Values.volumeMounts }}
           volumeMounts:
           {{- if .Values.configSecret }}
